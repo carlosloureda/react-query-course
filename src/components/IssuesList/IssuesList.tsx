@@ -1,12 +1,18 @@
+import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { IssueItem } from "./IssueItem";
+import { IssueItem } from "../IssueItem";
+import { type Issue } from "../../types/issues";
 
-export default function IssuesList() {
-  const issuesQuery = useQuery({
+export function IssuesList() {
+  const issuesQuery = useQuery<Issue[], Error>({
     queryKey: ["issues"],
     queryFn: () => fetch("/api/issues").then((res) => res.json()),
   });
+
+  if (issuesQuery.data) {
+    const a = issuesQuery.data;
+  }
 
   return (
     <div>
@@ -15,7 +21,7 @@ export default function IssuesList() {
         <p>Loading ...</p>
       ) : (
         <ul className="issues-list">
-          {issuesQuery.data.map((issue) => (
+          {issuesQuery?.data?.map((issue) => (
             <IssueItem
               key={issue.id}
               title={issue.title}

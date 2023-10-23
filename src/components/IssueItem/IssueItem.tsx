@@ -1,6 +1,19 @@
+import React from "react";
 import { Link } from "react-router-dom";
 import { GoIssueOpened, GoIssueClosed, GoComment } from "react-icons/go";
-import { relativeDate } from "../helpers/relativeDate";
+import { relativeDate } from "../../helpers/relativeDate";
+import { Label } from "../../types/issues";
+
+type IssueItemProps = {
+  title: string;
+  number: number;
+  assignee: string | null;
+  commentCount: number;
+  createdBy: string;
+  createdDate: string;
+  labels: Label[];
+  status: string;
+};
 
 export function IssueItem({
   title,
@@ -11,7 +24,7 @@ export function IssueItem({
   createdDate,
   labels,
   status,
-}) {
+}: IssueItemProps) {
   return (
     <li>
       <div>
@@ -25,8 +38,8 @@ export function IssueItem({
         <span>
           <Link to={`/issue/${number}`}>{title}</Link>
           {labels.map((label) => (
-            <span key={label} className={`label red`}>
-              {label}
+            <span key={label.id} className={`label ${label.color}`}>
+              {label.name}
             </span>
           ))}
         </span>
