@@ -1,9 +1,12 @@
 import React from "react";
-import ReactDOM from "react-dom";
-import "./index.css";
+import { createRoot } from "react-dom/client";
 import App from "./App";
 import { BrowserRouter } from "react-router-dom";
 import { worker } from "@uidotdev/react-query-api";
+import "./index.css";
+
+const container = document.getElementById("root");
+const root = createRoot(container);
 
 new Promise((res) => setTimeout(res, 100))
   .then(() =>
@@ -13,14 +16,13 @@ new Promise((res) => setTimeout(res, 100))
     })
   )
   .then(() => {
-    ReactDOM.render(
+    root.render(
       <React.StrictMode>
         <BrowserRouter>
           <div className="container">
             <App />
           </div>
         </BrowserRouter>
-      </React.StrictMode>,
-      document.getElementById("root")
+      </React.StrictMode>
     );
   });
