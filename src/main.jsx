@@ -3,10 +3,14 @@ import { createRoot } from "react-dom/client";
 import App from "./App";
 import { BrowserRouter } from "react-router-dom";
 import { worker } from "@uidotdev/react-query-api";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
 import "./index.css";
 
 const container = document.getElementById("root");
 const root = createRoot(container);
+
+const queryClient = new QueryClient();
 
 new Promise((res) => setTimeout(res, 100))
   .then(() =>
@@ -18,11 +22,13 @@ new Promise((res) => setTimeout(res, 100))
   .then(() => {
     root.render(
       <React.StrictMode>
-        <BrowserRouter>
-          <div className="container">
-            <App />
-          </div>
-        </BrowserRouter>
+        <QueryClientProvider client={queryClient}>
+          <BrowserRouter>
+            <div className="container">
+              <App />
+            </div>
+          </BrowserRouter>
+        </QueryClientProvider>
       </React.StrictMode>
     );
   });
