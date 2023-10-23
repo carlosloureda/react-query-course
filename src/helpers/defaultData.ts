@@ -1,4 +1,6 @@
-export const defaultLabels = [
+import { type Label, type Issue } from "../types/issues";
+
+export const defaultLabels: Label[] = [
   {
     id: "1",
     name: "bug",
@@ -31,7 +33,7 @@ export const defaultUsers = [
   },
 ];
 
-export const defaultIssue = {
+export const defaultIssue: Issue = {
   id: "issue_1",
   title: "Test Issue",
   number: 1,
@@ -39,8 +41,10 @@ export const defaultIssue = {
   assignee: "u_2",
   comments: ["comment_1"],
   createdBy: "u_1",
-  createdDate: new Date(),
+  createdDate: new Date().toDateString(),
   labels: [{ id: "1", name: "bug", color: "red" }],
+  dueDate: null,
+  completedDate: null,
 };
 
 export const defaultComments = [
