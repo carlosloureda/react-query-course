@@ -1,7 +1,7 @@
 export interface Issue {
   id: string;
   title: string;
-  labels: Label[];
+  labels: string[];
   comments: string[];
   number: number;
   status: string;
@@ -13,8 +13,8 @@ export interface Issue {
   completedDate: string | null;
 }
 
-export interface Label {
-  id: string;
-  name: string;
-  color: string;
-}
+// export interface Label {
+//   id: string;
+//   name: string;
+//   color: string;
+// }
