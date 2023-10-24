@@ -4,11 +4,8 @@ import { User } from "../types/user";
 export function useUserQuery(userId: string | null) {
   const userQuery = useQuery<User, Error>({
     queryKey: ["user", userId],
-    queryFn: () => {
-      if (!userId) return new Promise((res) => res);
-
-      return fetch(`/api/users/${userId}`).then((res) => res.json());
-    },
+    queryFn: () => fetch(`/api/users/${userId}`).then((res) => res.json()),
+    enabled: !!userId,
   });
 
   return userQuery;
