@@ -1,4 +1,4 @@
-import { type Label, type Issue } from "../types/issues";
+import { type Label, type Issue } from "../types/issue";
 
 export const defaultLabels: Label[] = [
   {

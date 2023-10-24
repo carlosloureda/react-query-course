@@ -18,6 +18,9 @@ a {
   color: var(--yellow);
   font-weight: 600;
 }
+.label.selected {
+  background-color: white !important;
+}
 
 .red {
   background-color: rgba(255, 0, 0, 0.2);
@@ -35,7 +38,7 @@ a {
 }
 .blue:hover,
 .blue.selected {
-  background-color: rgba(0, 0, 255, 0.5);
+  background-color: rgba(0, 0, 255, 0.9);
 }
 .cyan {
   background-color: rgba(0, 255, 255, 0.2);

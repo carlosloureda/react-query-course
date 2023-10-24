@@ -12,9 +12,3 @@ export interface Issue {
   dueDate: string | null;
   completedDate: string | null;
 }
-
-// export interface Label {
-//   id: string;
-//   name: string;
-//   color: string;
-// }

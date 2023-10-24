@@ -2,17 +2,20 @@ import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { IssueItem } from "../IssueItem";
-import { type Issue } from "../../types/issues";
+import { type Issue } from "../../types/issue";
 
-export function IssuesList() {
+type IssuesListProp = {
+  labels: string[];
+};
+
+export function IssuesList({ labels }: IssuesListProp) {
   const issuesQuery = useQuery<Issue[], Error>({
-    queryKey: ["issues"],
-    queryFn: () => fetch("/api/issues").then((res) => res.json()),
+    queryKey: ["issues", { labels }],
+    queryFn: () => {
+      const labelsString = labels.map((label) => `labels[]=${label}`).join("&");
+      return fetch(`/api/issues?${labelsString}`).then((res) => res.json());
+    },
   });
-
-  if (issuesQuery.data) {
-    const a = issuesQuery.data;
-  }
 
   return (
     <div>

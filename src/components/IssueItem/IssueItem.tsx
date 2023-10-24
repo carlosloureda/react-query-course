@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { GoIssueOpened, GoIssueClosed, GoComment } from "react-icons/go";
 import { relativeDate } from "../../helpers/relativeDate";
 import { useUserQuery } from "../../hooks/useUserQuery";
+import { Label } from "./components/Label";
 
 type IssueItemProps = {
   title: string;
@@ -27,6 +28,7 @@ export function IssueItem({
 }: IssueItemProps) {
   const assigneeQuery = useUserQuery(assignee);
   const createdByQuery = useUserQuery(createdBy);
+
   return (
     <li>
       <div>
@@ -40,9 +42,7 @@ export function IssueItem({
         <span>
           <Link to={`/issue/${number}`}>{title}</Link>
           {labels.map((label) => (
-            <span key={label} className={`label red`}>
-              {label}
-            </span>
+            <Label key={label} labelId={label} />
           ))}
         </span>
         <small>
