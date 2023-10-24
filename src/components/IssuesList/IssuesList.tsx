@@ -4,16 +4,27 @@ import { Link } from "react-router-dom";
 import { IssueItem } from "../IssueItem";
 import { type Issue } from "../../types/issue";
 
-type IssuesListProp = {
+type IssuesListProps = {
   labels: string[];
+  status: string;
 };
 
-export function IssuesList({ labels }: IssuesListProp) {
+export function IssuesList({ labels, status }: IssuesListProps) {
   const issuesQuery = useQuery<Issue[], Error>({
-    queryKey: ["issues", { labels }],
+    queryKey: ["issues", { labels, status }],
     queryFn: () => {
+      const statusString = status ? `&status=${status}` : "";
       const labelsString = labels.map((label) => `labels[]=${label}`).join("&");
-      return fetch(`/api/issues?${labelsString}`).then((res) => res.json());
+      return fetch(`/api/issues?${labelsString}${statusString}`).then((res) =>
+        res.json()
+      );
+
+      // const params = new URLSearchParams();
+      // status && params.append("status", status);
+      // labels.forEach((label) => params.append("labels[]", label));
+      // return fetch(`/api/issues?${params.toString()}`).then((res) =>
+      //   res.json()
+      // );
     },
   });
 
@@ -37,9 +48,6 @@ export function IssuesList({ labels }: IssuesListProp) {
               status={issue.status}
             />
           ))}
-          <li>
-            <Link to="/issue/1">Issue 1</Link>
-          </li>
         </ul>
       )}
     </div>
