@@ -1,8 +1,36 @@
 import React from "react";
 import { useParams } from "react-router-dom";
+import { useIssueQuery } from "./queries/useIssueQuery";
+import { useIssueCommentsQuery } from "./queries/useIssueCommentsQuery";
+import { IssueHeader } from "./components/IssueHeader";
+import { Comment } from "./components/Comment";
 
 export function IssueDetails() {
   const { number } = useParams();
+  const issueQuery = useIssueQuery({ issueNumber: number });
+  const commentsQuery = useIssueCommentsQuery({ issueNumber: number });
 
-  return <h1>Issue {number}</h1>;
+  return (
+    <div className="issue-details">
+      {issueQuery.isLoading ? (
+        <p>Loading issue...</p>
+      ) : (
+        <>
+          <IssueHeader {...issueQuery.data} />
+          <main>
+            <section>
+              {commentsQuery.isLoading ? (
+                <p>Loading...</p>
+              ) : (
+                commentsQuery.data?.map((comment) => (
+                  <Comment key={comment.id} {...comment} />
+                ))
+              )}
+            </section>
+            <aside></aside>
+          </main>
+        </>
+      )}
+    </div>
+  );
 }

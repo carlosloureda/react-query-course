@@ -1,12 +1,5 @@
 import React from "react";
-
-const POSSIBLE_STATUSES = [
-  { id: "backlog", label: "Backlog" },
-  { id: "todo", label: "To-do" },
-  { id: "inProgress", label: "In Progress" },
-  { id: "done", label: "Done" },
-  { id: "cancelled", label: "Cancelled" },
-];
+import { POSSIBLE_STATUSES } from "../../data/status";
 
 type StatusSelectProps = {
   value: string;
