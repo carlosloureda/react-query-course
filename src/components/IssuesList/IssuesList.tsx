@@ -25,6 +25,7 @@ export function IssuesList({ labels, status }: IssuesListProps) {
       //   res.json()
       // );
     },
+    staleTime: 1000 * 60,
   });
 
   const [searchValue, setSearchValue] = useState("");

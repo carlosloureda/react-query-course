@@ -6,6 +6,7 @@ export function useUserQuery(userId: string | null) {
     queryKey: ["user", userId],
     queryFn: () => fetch(`/api/users/${userId}`).then((res) => res.json()),
     enabled: !!userId,
+    staleTime: 1000 * 60 * 5,
   });
 
   return userQuery;
