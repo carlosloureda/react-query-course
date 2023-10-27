@@ -2,30 +2,50 @@ import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { IssueItem } from "../IssueItem";
 import { type Issue } from "../../types/issue";
+import fetchWithError from "../../helpers/fetchWithError";
 
 type IssuesListProps = {
   labels: string[];
   status: string;
 };
 
+type HeadersInitWithCustomError = HeadersInit & {
+  // Custom header so built in API on server fails the 50% of the times
+  "x-error": boolean;
+};
+
 export function IssuesList({ labels, status }: IssuesListProps) {
+  // Set this to true to test the fetch error (add 50% change query fails and dont retry)
+  // for issuesQuery
+  const testErrorFetch = false;
+
   const issuesQuery = useQuery<Issue[], Error>({
     queryKey: ["issues", { labels, status }],
     queryFn: () => {
       const statusString = status ? `&status=${status}` : "";
       const labelsString = labels.map((label) => `labels[]=${label}`).join("&");
-      return fetch(`/api/issues?${labelsString}${statusString}`).then((res) =>
-        res.json()
+      return fetchWithError(
+        `/api/issues?${labelsString}${statusString}`,
+        testErrorFetch
+          ? {
+              headers: {
+                "x-error": true,
+              } as HeadersInitWithCustomError,
+            }
+          : undefined
       );
 
       // const params = new URLSearchParams();
       // status && params.append("status", status);
       // labels.forEach((label) => params.append("labels[]", label));
-      // return fetch(`/api/issues?${params.toString()}`).then((res) =>
-      //   res.json()
-      // );
+      // return fetch(`/api/issues?${params.toString()}`);
     },
     staleTime: 1000 * 60,
+    retry: testErrorFetch ? false : true,
+    // Check main.jsx to see how to handle errors in a declarative way
+    meta: {
+      errorMessage: "Failed to fetch initial issues",
+    },
   });
 
   const [searchValue, setSearchValue] = useState("");
@@ -38,8 +58,7 @@ export function IssuesList({ labels, status }: IssuesListProps) {
     Error
   >({
     queryKey: ["issues", "search", searchValue],
-    queryFn: () =>
-      fetch(`/api/search/issues?q=${searchValue}`).then((res) => res.json()),
+    queryFn: () => fetchWithError(`/api/search/issues?q=${searchValue}`),
     enabled: searchValue.length > 0,
   });
 
@@ -97,7 +116,13 @@ export function IssuesList({ labels, status }: IssuesListProps) {
           {issuesQuery.isLoading ? (
             <p>Loading...</p>
           ) : (
-            renderIssueItemsList({ items: issuesQuery.data })
+            <>
+              {issuesQuery.isError ? (
+                <p>{issuesQuery.error.message}</p>
+              ) : (
+                renderIssueItemsList({ items: issuesQuery.data })
+              )}
+            </>
           )}
         </>
       )}
