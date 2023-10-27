@@ -46,6 +46,26 @@ export function IssuesList({ labels, status }: IssuesListProps) {
     !issuesQuery.isLoading &&
     (searchQuery.isLoading || searchQuery.status !== "pending");
 
+  const renderIssueItemsList = ({ items }: { items?: Issue[] }) => {
+    return (
+      <ul className="issues-list">
+        {items?.map((issue) => (
+          <IssueItem
+            key={issue.id}
+            title={issue.title}
+            number={issue.number}
+            assignee={issue.assignee}
+            commentCount={issue.comments.length}
+            createdBy={issue.createdBy}
+            createdDate={issue.createdDate}
+            labels={issue.labels}
+            status={issue.status}
+          />
+        ))}
+      </ul>
+    );
+  };
+
   return (
     <div>
       <form
@@ -76,21 +96,7 @@ export function IssuesList({ labels, status }: IssuesListProps) {
           {issuesQuery.isLoading ? (
             <p>Loading...</p>
           ) : (
-            <ul className="issues-list">
-              {issuesQuery.data?.map((issue) => (
-                <IssueItem
-                  key={issue.id}
-                  title={issue.title}
-                  number={issue.number}
-                  assignee={issue.assignee}
-                  commentCount={issue.comments.length}
-                  createdBy={issue.createdBy}
-                  createdDate={issue.createdDate}
-                  labels={issue.labels}
-                  status={issue.status}
-                />
-              ))}
-            </ul>
+            renderIssueItemsList({ items: issuesQuery.data })
           )}
         </>
       )}
@@ -102,21 +108,7 @@ export function IssuesList({ labels, status }: IssuesListProps) {
           ) : (
             <>
               <p>{searchQuery.data?.count} Results</p>
-              <ul className="issues-list">
-                {searchQuery.data?.items.map((issue) => (
-                  <IssueItem
-                    key={issue.id}
-                    title={issue.title}
-                    number={issue.number}
-                    assignee={issue.assignee}
-                    commentCount={issue.comments.length}
-                    createdBy={issue.createdBy}
-                    createdDate={issue.createdDate}
-                    labels={issue.labels}
-                    status={issue.status}
-                  />
-                ))}
-              </ul>
+              {renderIssueItemsList({ items: searchQuery.data?.items })}
             </>
           )}
         </>
