@@ -18,6 +18,11 @@ const container = document.getElementById("root");
 const root = createRoot(container);
 
 const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60,
+    },
+  },
   queryCache: new QueryCache({
     onError: (error, query) => {
       // We can still access the error message here, and with metada

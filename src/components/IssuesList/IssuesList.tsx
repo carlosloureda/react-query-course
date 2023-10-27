@@ -40,7 +40,6 @@ export function IssuesList({ labels, status }: IssuesListProps) {
       // labels.forEach((label) => params.append("labels[]", label));
       // return fetch(`/api/issues?${params.toString()}`);
     },
-    staleTime: 1000 * 60,
     retry: testErrorFetch ? false : true,
     // Check main.jsx to see how to handle errors in a declarative way
     meta: {
