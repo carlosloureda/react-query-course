@@ -42,6 +42,10 @@ export function IssuesList({ labels, status }: IssuesListProps) {
     enabled: searchValue.length > 0,
   });
 
+  const showIssuesSearch =
+    !issuesQuery.isLoading &&
+    (searchQuery.isLoading || searchQuery.status !== "pending");
+
   return (
     <div>
       <form
@@ -66,31 +70,31 @@ export function IssuesList({ labels, status }: IssuesListProps) {
           }}
         />
       </form>
-      {issuesQuery.isLoading ? (
+      {!showIssuesSearch && (
         <>
           <h2>Issues List</h2>
-          <p>Loading...</p>
+          {issuesQuery.isLoading ? (
+            <p>Loading...</p>
+          ) : (
+            <ul className="issues-list">
+              {issuesQuery.data?.map((issue) => (
+                <IssueItem
+                  key={issue.id}
+                  title={issue.title}
+                  number={issue.number}
+                  assignee={issue.assignee}
+                  commentCount={issue.comments.length}
+                  createdBy={issue.createdBy}
+                  createdDate={issue.createdDate}
+                  labels={issue.labels}
+                  status={issue.status}
+                />
+              ))}
+            </ul>
+          )}
         </>
-      ) : searchQuery.status === "pending" && !searchQuery.isLoading ? (
-        <>
-          <h2>Issues List</h2>
-          <ul className="issues-list">
-            {issuesQuery.data?.map((issue) => (
-              <IssueItem
-                key={issue.id}
-                title={issue.title}
-                number={issue.number}
-                assignee={issue.assignee}
-                commentCount={issue.comments.length}
-                createdBy={issue.createdBy}
-                createdDate={issue.createdDate}
-                labels={issue.labels}
-                status={issue.status}
-              />
-            ))}
-          </ul>
-        </>
-      ) : (
+      )}
+      {showIssuesSearch && (
         <>
           <h2>Search Results</h2>
           {searchQuery.isLoading ? (
