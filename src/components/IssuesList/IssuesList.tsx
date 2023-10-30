@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { IssueItem } from "../IssueItem";
 import { type Issue } from "../../types/issue";
 import fetchWithError from "../../helpers/fetchWithError";
@@ -19,13 +19,13 @@ export function IssuesList({ labels, status }: IssuesListProps) {
   // Set this to true to test the fetch error (add 50% change query fails and dont retry)
   // for issuesQuery
   const testErrorFetch = false;
-
+  const queryClient = useQueryClient();
   const issuesQuery = useQuery<Issue[], Error>({
     queryKey: ["issues", { labels, status }],
-    queryFn: ({ signal }) => {
+    queryFn: async ({ signal }) => {
       const statusString = status ? `&status=${status}` : "";
       const labelsString = labels.map((label) => `labels[]=${label}`).join("&");
-      return fetchWithError(
+      const results: Issue[] = await fetchWithError(
         `/api/issues?${labelsString}${statusString}`,
         testErrorFetch
           ? {
@@ -36,6 +36,11 @@ export function IssuesList({ labels, status }: IssuesListProps) {
             }
           : { signal }
       );
+      results.forEach((issue) => {
+        queryClient.setQueryData(["issues", issue.number.toString()], issue);
+      });
+
+      return results;
 
       // const params = new URLSearchParams();
       // status && params.append("status", status);
