@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { IssueItem } from "../IssueItem";
 import { type Issue } from "../../types/issue";
 import fetchWithError from "../../helpers/fetchWithError";
+import { Loader } from "../Loader";
 
 type IssuesListProps = {
   labels: string[];
@@ -113,7 +114,7 @@ export function IssuesList({ labels, status }: IssuesListProps) {
       </form>
       {!showIssuesSearch && (
         <>
-          <h2>Issues List</h2>
+          <h2>Issues List {issuesQuery.isFetching ? <Loader /> : null}</h2>
           {issuesQuery.isLoading ? (
             <p>Loading...</p>
           ) : (
