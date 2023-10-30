@@ -4,7 +4,8 @@ import { type Label } from "../types/label";
 export function useLabelsQuery() {
   const labelsQuery = useQuery<Label[], Error>({
     queryKey: ["labels"],
-    queryFn: () => fetch(`/api/labels`).then((res) => res.json()),
+    queryFn: ({ signal }) =>
+      fetch(`/api/labels`, { signal }).then((res) => res.json()),
     staleTime: 1000 * 60 * 60,
   });
 

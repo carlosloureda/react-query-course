@@ -21,7 +21,7 @@ export function IssuesList({ labels, status }: IssuesListProps) {
 
   const issuesQuery = useQuery<Issue[], Error>({
     queryKey: ["issues", { labels, status }],
-    queryFn: () => {
+    queryFn: ({ signal }) => {
       const statusString = status ? `&status=${status}` : "";
       const labelsString = labels.map((label) => `labels[]=${label}`).join("&");
       return fetchWithError(
@@ -31,8 +31,9 @@ export function IssuesList({ labels, status }: IssuesListProps) {
               headers: {
                 "x-error": true,
               } as HeadersInitWithCustomError,
+              signal,
             }
-          : undefined
+          : { signal }
       );
 
       // const params = new URLSearchParams();
@@ -57,7 +58,8 @@ export function IssuesList({ labels, status }: IssuesListProps) {
     Error
   >({
     queryKey: ["issues", "search", searchValue],
-    queryFn: () => fetchWithError(`/api/search/issues?q=${searchValue}`),
+    queryFn: ({ signal }) =>
+      fetchWithError(`/api/search/issues?q=${searchValue}`, { signal }),
     enabled: searchValue.length > 0,
   });
 

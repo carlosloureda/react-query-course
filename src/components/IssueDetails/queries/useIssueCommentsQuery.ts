@@ -8,9 +8,9 @@ export function useIssueCommentsQuery({
 }) {
   return useQuery<Comment[], Error>({
     queryKey: ["issues", issueNumber, "comments"],
-    queryFn: async () => {
-      return fetch(`/api/issues/${issueNumber}/comments`).then((res) =>
-        res.json()
+    queryFn: async ({ signal }) => {
+      return fetch(`/api/issues/${issueNumber}/comments`, { signal }).then(
+        (res) => res.json()
       );
     },
     enabled: !!issueNumber,
