@@ -1,5 +1,9 @@
 import React, { useState } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  keepPreviousData,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { IssueItem } from "../IssueItem";
 import { type Issue } from "../../types/issue";
 import fetchWithError from "../../helpers/fetchWithError";
@@ -8,6 +12,8 @@ import { Loader } from "../Loader";
 type IssuesListProps = {
   labels: string[];
   status: string;
+  pageNum: number;
+  onPageNumChange: (_: number) => void;
 };
 
 type HeadersInitWithCustomError = HeadersInit & {
@@ -15,18 +21,24 @@ type HeadersInitWithCustomError = HeadersInit & {
   "x-error": boolean;
 };
 
-export function IssuesList({ labels, status }: IssuesListProps) {
+export function IssuesList({
+  labels,
+  status,
+  pageNum,
+  onPageNumChange,
+}: IssuesListProps) {
   // Set this to true to test the fetch error (add 50% change query fails and dont retry)
   // for issuesQuery
   const testErrorFetch = false;
   const queryClient = useQueryClient();
   const issuesQuery = useQuery<Issue[], Error>({
-    queryKey: ["issues", { labels, status }],
+    queryKey: ["issues", { labels, status, pageNum }],
     queryFn: async ({ signal }) => {
       const statusString = status ? `&status=${status}` : "";
       const labelsString = labels.map((label) => `labels[]=${label}`).join("&");
+      const paginationString = pageNum ? `&page=${pageNum}` : "";
       const results: Issue[] = await fetchWithError(
-        `/api/issues?${labelsString}${statusString}`,
+        `/api/issues?${labelsString}${statusString}${paginationString}`,
         testErrorFetch
           ? {
               headers: {
@@ -52,8 +64,10 @@ export function IssuesList({ labels, status }: IssuesListProps) {
     meta: {
       errorMessage: "Failed to fetch initial issues",
     },
+    placeholderData: keepPreviousData,
   });
 
+  // We could also prefetch next issues page like this example: https://codesandbox.io/s/paginated-queries-lk3w69?file=/App.js
   const [searchValue, setSearchValue] = useState("");
 
   const searchQuery = useQuery<
@@ -129,6 +143,37 @@ export function IssuesList({ labels, status }: IssuesListProps) {
               ) : (
                 renderIssueItemsList({ items: issuesQuery.data })
               )}
+              <div className="pagination">
+                <button
+                  onClick={() => {
+                    if (pageNum - 1 > 0) {
+                      onPageNumChange(pageNum - 1);
+                    }
+                  }}
+                  disabled={pageNum === 1}
+                >
+                  Previous
+                </button>
+                <p>
+                  page {pageNum} {issuesQuery.isFetching ? "..." : ""}
+                </p>
+                <button
+                  onClick={() => {
+                    if (
+                      issuesQuery.data?.length !== 0 &&
+                      !issuesQuery.isPlaceholderData
+                    ) {
+                      onPageNumChange(pageNum + 1);
+                    }
+                  }}
+                  disabled={
+                    issuesQuery.data?.length === 0 ||
+                    issuesQuery.isPlaceholderData
+                  }
+                >
+                  Next
+                </button>
+              </div>
             </>
           )}
         </>
