@@ -4,12 +4,19 @@ import { POSSIBLE_STATUSES } from "../../data/status";
 type StatusSelectProps = {
   value: string;
   onChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
+  noEmptyOption?: boolean;
 };
 
-export function StatusSelect({ value, onChange }: StatusSelectProps) {
+export function StatusSelect({
+  value,
+  onChange,
+  noEmptyOption = false,
+}: StatusSelectProps) {
   return (
     <select value={value} onChange={onChange} className="status-select">
-      <option value="">Select a status to filter</option>
+      {noEmptyOption ? null : (
+        <option value="">Select a status to filter</option>
+      )}
       {POSSIBLE_STATUSES.map((status) => (
         <option value={status.id} key={status.id}>
           {status.label}

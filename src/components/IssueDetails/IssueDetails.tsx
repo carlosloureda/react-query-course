@@ -4,6 +4,7 @@ import { useIssueQuery } from "./queries/useIssueQuery";
 import { useIssueCommentsQuery } from "./queries/useIssueCommentsQuery";
 import { IssueHeader } from "./components/IssueHeader";
 import { Comment } from "./components/Comment";
+import { IssueStatus } from "../IssueStatus/IssueStatus";
 
 export function IssueDetails() {
   const { number } = useParams();
@@ -27,7 +28,12 @@ export function IssueDetails() {
                 ))
               )}
             </section>
-            <aside></aside>
+            <aside>
+              <IssueStatus
+                status={issueQuery.data.status}
+                issueNumber={issueQuery.data.number.toString()}
+              />
+            </aside>
           </main>
         </>
       )}
