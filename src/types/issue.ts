@@ -5,7 +5,6 @@ export interface Issue {
   comments: string[];
   number: number;
   status: string;
-  // TODO: check dates format properly
   createdDate: string;
   createdBy: string;
   assignee: string | null;

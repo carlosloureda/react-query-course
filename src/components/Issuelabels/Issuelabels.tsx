@@ -58,7 +58,7 @@ export default function IssueLabels({
       };
     },
     onError: (error, variables, context) => {
-      console.log(
+      console.error(
         `[IssueLabels setLabels] error on mutation: ${error.message}, variables: ${variables}`
       );
       context?.();

@@ -50,7 +50,7 @@ export function IssueAssignment({
       };
     },
     onError: (error: Error, variables: number, context) => {
-      console.log(
+      console.error(
         `[IssueAssignment setAssignee] error on mutation: ${error.message}, variables: ${variables}`
       );
       context?.();

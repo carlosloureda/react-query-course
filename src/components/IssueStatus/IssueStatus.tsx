@@ -38,7 +38,7 @@ export function IssueStatus({ status, issueNumber }: IssueStatusProps) {
       };
     },
     onError: (error: Error, variables: string, context) => {
-      console.log(
+      console.error(
         `[IssueStatus setStatus] error on mutation: ${error.message}, variables: ${variables}`
       );
       context?.();
