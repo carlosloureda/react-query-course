@@ -6,11 +6,16 @@ import { IssueHeader } from "./components/IssueHeader";
 import { Comment } from "./components/Comment";
 import { IssueStatus } from "../IssueStatus/IssueStatus";
 import { IssueAssignment } from "../IssueAssignment";
+import IssueLabels from "../Issuelabels/Issuelabels";
 
 export function IssueDetails() {
   const { number } = useParams();
   const issueQuery = useIssueQuery({ issueNumber: number });
   const commentsQuery = useIssueCommentsQuery({ issueNumber: number });
+
+  if (!issueQuery.isLoading && !issueQuery.data) {
+    return <p>Error loading data for issue detail</p>;
+  }
 
   return (
     <div className="issue-details">
@@ -18,7 +23,7 @@ export function IssueDetails() {
         <p>Loading issue...</p>
       ) : (
         <>
-          <IssueHeader {...issueQuery.data} />
+          {issueQuery.data && <IssueHeader {...issueQuery.data} />}
           <main>
             <section>
               {commentsQuery.isLoading ? (
@@ -30,14 +35,22 @@ export function IssueDetails() {
               )}
             </section>
             <aside>
-              <IssueStatus
-                status={issueQuery.data.status}
-                issueNumber={issueQuery.data.number.toString()}
-              />
-              <IssueAssignment
-                assignee={issueQuery.data.assignee}
-                issueNumber={issueQuery.data.number.toString()}
-              />
+              {issueQuery.data && (
+                <>
+                  <IssueStatus
+                    status={issueQuery.data.status}
+                    issueNumber={issueQuery.data.number.toString()}
+                  />
+                  <IssueAssignment
+                    assignee={issueQuery.data.assignee}
+                    issueNumber={issueQuery.data.number.toString()}
+                  />
+                  <IssueLabels
+                    labelsIds={issueQuery.data.labels}
+                    issueNumber={issueQuery.data.number.toString()}
+                  />
+                </>
+              )}
             </aside>
           </main>
         </>

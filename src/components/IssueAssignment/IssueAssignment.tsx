@@ -6,7 +6,7 @@ import { type Issue } from "../../types/issue";
 import { useUserQuery } from "../../hooks/useUserQuery";
 
 type IssueAssignmentProps = {
-  assignee: string;
+  assignee: string | null;
   issueNumber: string;
 };
 export function IssueAssignment({

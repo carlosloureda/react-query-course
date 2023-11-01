@@ -6,7 +6,7 @@ import { relativeDate } from "../../../../helpers/relativeDate";
 
 type IssueHeaderProp = {
   title: string;
-  number: string;
+  number: number;
   status: string;
   createdBy: string;
   createdDate: string;
