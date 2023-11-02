@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { Comment } from "../../../types/comment";
 
 export function useIssueCommentsQuery({
@@ -6,12 +6,21 @@ export function useIssueCommentsQuery({
 }: {
   issueNumber?: string;
 }) {
-  return useQuery<Comment[], Error>({
+  return useInfiniteQuery<Comment[], Error>({
     queryKey: ["issues", issueNumber, "comments"],
-    queryFn: async ({ signal }) => {
-      return fetch(`/api/issues/${issueNumber}/comments`, { signal }).then(
-        (res) => res.json()
-      );
+    queryFn: async ({ signal, pageParam }) => {
+      return fetch(`/api/issues/${issueNumber}/comments?page=${pageParam}`, {
+        signal,
+      }).then((res) => res.json());
+    },
+    initialPageParam: 1,
+    getNextPageParam: (
+      lastPage: Comment[],
+      allPages: Comment[][],
+      lastPageParam: unknown
+    ) => {
+      if (lastPage.length === 0) return 1;
+      return (lastPageParam as number) + 1;
     },
     enabled: !!issueNumber,
   });

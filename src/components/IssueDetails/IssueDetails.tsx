@@ -7,11 +7,14 @@ import { Comment } from "./components/Comment";
 import { IssueStatus } from "../IssueStatus/IssueStatus";
 import { IssueAssignment } from "../IssueAssignment";
 import IssueLabels from "../Issuelabels/Issuelabels";
+import { Loader } from "../Loader";
+import useScrollToBottomAction from "../../hooks/useScrollToBottomAction";
 
 export function IssueDetails() {
   const { number } = useParams();
   const issueQuery = useIssueQuery({ issueNumber: number });
   const commentsQuery = useIssueCommentsQuery({ issueNumber: number });
+  useScrollToBottomAction(document, commentsQuery.fetchNextPage, 100);
 
   if (!issueQuery.isLoading && !issueQuery.data) {
     return <p>Error loading data for issue detail</p>;
@@ -29,10 +32,13 @@ export function IssueDetails() {
               {commentsQuery.isLoading ? (
                 <p>Loading...</p>
               ) : (
-                commentsQuery.data?.map((comment) => (
-                  <Comment key={comment.id} {...comment} />
-                ))
+                commentsQuery.data?.pages.map((page) =>
+                  page.map((comment) => (
+                    <Comment key={comment.id} {...comment} />
+                  ))
+                )
               )}
+              {commentsQuery.isFetchingNextPage && <Loader />}
             </section>
             <aside>
               {issueQuery.data && (

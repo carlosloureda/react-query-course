@@ -35,9 +35,11 @@ export function IssueItem({
   return (
     <li
       onMouseEnter={() => {
-        queryClient.prefetchQuery({
+        queryClient.prefetchInfiniteQuery({
           queryKey: ["issues", number.toString(), "comments"],
-          queryFn: () => fetchWithError(`/api/issues/${number}/comments`),
+          queryFn: () =>
+            fetchWithError(`/api/issues/${number}/comments?page=1`),
+          initialPageParam: 1,
         });
       }}
     >
